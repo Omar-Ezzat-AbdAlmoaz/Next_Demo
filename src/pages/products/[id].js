@@ -1,14 +1,18 @@
-import { useRouter } from "next/router";
-import Card from "../../components/Card";
+import ProductDetails from "../../components/ProductDetails";
 
-export default function ProductDetails() {
-  const router = useRouter();
-  const { id } = router.query;
+export async function getServerSideProps(context) {
+  const { id } = context.params;
 
-  return (
-    <div>
-        <h2>Product Details</h2>
-        <Card product={{ id, name: `Product ${id}`, price: 99.99, description: "This is a great product." }} />
-    </div>
-  );
+  const res = await fetch(`https://dummyjson.com/products/${id}`);
+  const product = await res.json();
+
+  return {
+    props: {
+      product,
+    },
+  };
+}
+
+export default function ProductPage({ product }) {
+  return <ProductDetails product={product} />;
 }
